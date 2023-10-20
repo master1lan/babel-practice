@@ -1,0 +1,14 @@
+{
+  // 使用 IntelliSense 了解相关属性。
+  // 悬停以查看现有属性的描述。
+  // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "1.0.0",
+  "configurations": [
+    {
+      "name": "自动国际化",
+      "program": "${workspaceFolder}/i18n/index.js",
+      "request": "launch",
+      "type": "node"
+    }
+  ]
+}

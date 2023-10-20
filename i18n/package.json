@@ -1,0 +1,19 @@
+{
+  "name": "babel-i18n",
+  "version": "1.0.0",
+  "license": "MIT",
+  "scripts": {
+    "build:i18n": "node index.js"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.23.2",
+    "@babel/generator": "^7.23.0",
+    "@babel/helper-plugin-utils": "^7.22.5",
+    "@babel/parser": "^7.23.0",
+    "@babel/types": "^7.23.0",
+    "@types/babel__core": "^7.20.3",
+    "@types/node": "^20.8.7",
+    "crypto-js": "^4.1.1",
+    "prettier": "^3.0.3"
+  }
+}
