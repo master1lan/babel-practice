@@ -149,12 +149,12 @@ const autoTrackPlugin = declare((api, options, dirname) => {
               }
             },
           });
+          state.intlUid = intlName;
           if (!imported) {
             const importAst = api.template.ast(intlImportString);
             state.file.set(finalAction, () => {
               path.node.body.unshift(importAst);
             });
-            state.intlUid = intlName;
           }
           // 这段用于判断前面有没有相关忽略注释，有则需要忽略这些转换操作。
           path.traverse({
