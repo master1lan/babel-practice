@@ -59,7 +59,7 @@ const mappingDict = (dict = {}) => Object.assign(intlDict, dict);
 const ignoreFile = ['intl/index.ts'];
 const parseFileType = ['.js', '.ts', '.tsx', '.jsx'];
 const demoPath = path.join(srcPath, 'index.tsx');
-fsRead(srcPath, (filePath) => {
+fsRead(demoPath, (filePath) => {
   const judgeParse =
     parseFileType.some((fileType) => filePath.endsWith(fileType)) &&
     !ignoreFile.some((fileType) => filePath.endsWith(fileType));

@@ -206,16 +206,13 @@ const autoTrackPlugin = declare((api, options, dirname) => {
         }
         function reducerBinary(node = path.node) {
           if (!t.isBinaryExpression(node)) {
-            // @ts-ignore
             return [{ ...node }];
           }
           const arr = [];
           if (node.left) {
-            // @ts-ignore
             arr.push(...reducerBinary(node.left));
           }
           if (node.right) {
-            // @ts-ignore
             arr.push(...reducerBinary(node.right));
           }
           return arr;
@@ -224,36 +221,31 @@ const autoTrackPlugin = declare((api, options, dirname) => {
         const binaryNodes = reducerBinary(path.node);
         const templateElements = [],
           templateExpressions = [];
-        let lastVariable = false;
+        const createTempElement = (value = '', tail = false) =>
+          t.templateElement({ raw: value, cooked: value }, tail);
+        const pushTemplateElement = (value = '', tail = false) =>
+          templateElements.push(createTempElement(value, tail));
         binaryNodes.map((node, index) => {
-          const isFirst = index === 0;
           const isLast = index === binaryNodes.length;
           const flag = isLast ? true : false;
           /** babel 新版本规定,模版ast第一个参数必须比第二个多一个 */
-          /** 如果不是字符串,则说明是变量,此时只需要保存 */
           if (!t.isStringLiteral(node)) {
             templateExpressions.push(node);
-            // templateElements.push(t.templateElement({ raw: '', cooked: '' }, flag));
-            lastVariable = true;
+            pushTemplateElement('', flag);
           } else {
             /** 是字符串,则需要进行一些额外的操作,比如把前面的串起来 */
-            const res = { raw: node.value, cooked: node.value };
-            if (!isFirst) {
-              const aheadEle = templateElements.pop();
+            const aheadEle = templateElements.pop();
+            if (aheadEle) {
               const aheadRaw = aheadEle.value.raw;
-
-              if (lastVariable) {
-                templateElements.push(aheadEle);
-              } else {
-                res.raw = aheadRaw;
-                res.cooked = aheadRaw;
-              }
+              pushTemplateElement(aheadRaw + node.value, flag);
+            } else {
+              pushTemplateElement(node.value, flag);
             }
-            templateElements.push(t.templateElement({ raw: node.value, cooked: node.value }, flag));
-            lastVariable = false;
           }
         });
-
+        if (!t.isStringLiteral(binaryNodes[0])) {
+          templateElements.unshift(createTempElement('', false));
+        }
         const templateLiteral = t.templateLiteral(templateElements, templateExpressions);
         path.replaceWith(templateLiteral);
         makeFlagToShowChangedAst(state);

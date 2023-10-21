@@ -5,19 +5,40 @@ import { Button } from './components/button';
 interface Props {
   title: '哈哈' | '怎么就写中文呢';
 }
-const getName = () => '12345';
+const a = '你',
+  b = a,
+  c = b,
+  d = c,
+  e = d;
+'好' + a;
+'好' + a + '是';
+'好' + a + b;
+'好' + a + b + '是';
+'好' + a + b + '是' + c;
+'好' + '好' + a + b + '是' + '是' + c + '可';
+a + '是';
+a + b + c + '是';
+a + '是' + b;
+a + '是' + b + '可';
+a + '是' + '是' + b;
+a + '是' + '是' + b + c;
+a + '是' + '是' + b + c + '可';
+// const getName = (preName: '小明' | '小红') => preName + '同学';
 export default function App() {
+  /** 这里的会依次转换 */
   const msgArr = ['消息提示', '这里的中文因为没有使用加号', '所以不会被进行拼接'];
   const obj = {
     '123': '你好',
     '中文：': '你好',
-    '英文：': 'hello' + msgArr[0],
-    english: `${'hello'},user`,
+    // '英文：': 'hello' + msgArr[0],
+    english: `${'hello'},你好`,
   };
 
   return (
     <div title={'标题'}>
       <Button />
+      {/* 这里的为jsx内直接填写的 */}
+      <div>你好</div>
     </div>
   );
 }
