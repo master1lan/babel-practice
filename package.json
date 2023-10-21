@@ -1,11 +1,15 @@
 {
-  "name": "babel-i18n",
+  "name": "babel-practice",
   "version": "1.0.0",
-  "license": "MIT",
-  "scripts": {
-    "build:i18n": "node index.js"
-  },
-  "devDependencies": {
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "description": "",
+  "scripts": {},
+  "author": "master1lan",
+  "license": "ISC",
+  "dependencies": {
     "@babel/core": "^7.23.2",
     "@babel/generator": "^7.23.0",
     "@babel/helper-plugin-utils": "^7.22.5",
@@ -13,7 +17,9 @@
     "@babel/types": "^7.23.0",
     "@types/babel__core": "^7.20.3",
     "@types/node": "^20.8.7",
-    "crypto-js": "^4.1.1",
     "prettier": "^3.0.3"
+  },
+  "devDependencies": {
+    "@types/babel__helper-plugin-utils": "^7.10.2"
   }
 }

@@ -5,14 +5,18 @@ import { Button } from './components/button';
 interface Props {
   title: '哈哈' | '怎么就写中文呢';
 }
-
+const getName = () => '12345';
 export default function App() {
   const msgArr = ['消息提示', '这里的中文因为没有使用加号', '所以不会被进行拼接'];
   const obj = {
-    这是错误的写法: '其实不应该在对象的键里面写中文',
+    '123': '你好',
+    '中文：': '你好',
+    '英文：': 'hello' + msgArr[0],
+    english: `${'hello'},user`,
   };
+
   return (
-    <div title='测试'>
+    <div title={'标题'}>
       <Button />
     </div>
   );

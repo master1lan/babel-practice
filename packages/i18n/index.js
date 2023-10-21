@@ -5,7 +5,7 @@ const autoI18nPlugin = require('./plugin/i18n');
 const fs = require('fs');
 const path = require('path');
 
-const prettierConfPath = path.resolve(__dirname, '../', '.prettierrc');
+const prettierConfPath = path.resolve(__dirname, '../../', '.prettierrc');
 const srcPath = path.resolve(__dirname, './src');
 
 /**
@@ -58,7 +58,7 @@ const intlDict = {};
 const mappingDict = (dict = {}) => Object.assign(intlDict, dict);
 const ignoreFile = ['intl/index.ts'];
 const parseFileType = ['.js', '.ts', '.tsx', '.jsx'];
-
+const demoPath = path.join(srcPath, 'index.tsx');
 fsRead(srcPath, (filePath) => {
   const judgeParse =
     parseFileType.some((fileType) => filePath.endsWith(fileType)) &&

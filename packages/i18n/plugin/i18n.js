@@ -57,7 +57,9 @@ const autoTrackPlugin = declare((api, options, dirname) => {
     // 替换后的ast
     let replaceExpression = api.template.ast(
       `${intlUid}('${value}',${expressionParams.length ? generate(expressionToAst).code : ''})`,
+      // @ts-ignore
     ).expression;
+
     // 若包含在jsx中间，需要包裹一层{}
     if (path.findParent((p) => p.isJSXAttribute())) {
       if (
@@ -71,10 +73,10 @@ const autoTrackPlugin = declare((api, options, dirname) => {
         !findParentLevel(path, (p) => p.isReturnStatement())
       ) {
         // 就是在外面包裹一层{}
-        replaceExpression = api.types.JSXExpressionContainer(replaceExpression);
+        replaceExpression = api.types.jSXExpressionContainer(replaceExpression);
       }
     } else if (path.isJSXText()) {
-      replaceExpression = api.types.JSXExpressionContainer(replaceExpression);
+      replaceExpression = api.types.jSXExpressionContainer(replaceExpression);
     }
 
     return replaceExpression;
@@ -112,7 +114,7 @@ const autoTrackPlugin = declare((api, options, dirname) => {
   }
   /** 集中处理ast */
   function resolveAst(path, state, value) {
-    if (path.findParent((p) => p.isTSLiteralType() || p.isObjectProperty())) {
+    if (path.findParent((p) => p.isTSLiteralType())) {
       return;
     }
     if (checkSkip(path) || !value || !includesChinese(value)) {
@@ -171,6 +173,26 @@ const autoTrackPlugin = declare((api, options, dirname) => {
           });
         },
       },
+      /** 必须单独处理object的key为中文的情况，否则将无法转换成功 */
+      ObjectProperty(path, state) {
+        const keyNode = path.node.key;
+        /** 如果key不是字符串或者模版字符串，退出 */
+        if (!t.isStringLiteral(keyNode)) {
+          return;
+        }
+        /** 不解析类型 */
+        if (path.findParent((p) => p.isTSLiteralType())) {
+          return;
+        }
+        const value = keyNode.value;
+        /** 中文才转 */
+        if (!includesChinese(value)) {
+          return;
+        }
+        path.node.key = api.template.ast(`[${keyNode.extra.raw}]`).expression;
+        path.replaceWith(path);
+        makeFlagToShowChangedAst(state);
+      },
       /** 处理操作符情况，只处理+；当有一边是字符串时，js执行字符串拼接 */
       BinaryExpression(path, state) {
         /**
@@ -184,13 +206,16 @@ const autoTrackPlugin = declare((api, options, dirname) => {
         }
         function reducerBinary(node = path.node) {
           if (!t.isBinaryExpression(node)) {
+            // @ts-ignore
             return [{ ...node }];
           }
           const arr = [];
           if (node.left) {
+            // @ts-ignore
             arr.push(...reducerBinary(node.left));
           }
           if (node.right) {
+            // @ts-ignore
             arr.push(...reducerBinary(node.right));
           }
           return arr;
@@ -254,12 +279,14 @@ const autoTrackPlugin = declare((api, options, dirname) => {
       },
     },
     post(file) {
+      // @ts-ignore
       const allText = file.get(AllText);
       const intlData = allText.reduce((obj, item) => {
         obj[item.key] = item.value;
         return obj;
       }, {});
       options.mappingCallbacks(intlData);
+      // @ts-ignore
       file.get(shouldFinalAction) && file.get(finalAction)();
     },
   };

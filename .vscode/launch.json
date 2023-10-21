@@ -6,7 +6,7 @@
   "configurations": [
     {
       "name": "自动国际化",
-      "program": "${workspaceFolder}/i18n/index.js",
+      "program": "${workspaceFolder}/packages/i18n/index.js",
       "request": "launch",
       "type": "node"
     }
