@@ -5,4 +5,5 @@
  */
 export function getLangMsg(msg: string, variable?: object) {
   // 这里写一个转换函数
+  return msg as any;
 }

@@ -5,24 +5,11 @@ import { Button } from './components/button';
 interface Props {
   title: '哈哈' | '怎么就写中文呢';
 }
-const a = '你',
-  b = a,
-  c = b,
-  d = c,
-  e = d;
-'好' + a;
-'好' + a + '是';
-'好' + a + b;
-'好' + a + b + '是';
-'好' + a + b + '是' + c;
-'好' + '好' + a + b + '是' + '是' + c + '可';
-a + '是';
-a + b + c + '是';
-a + '是' + b;
-a + '是' + b + '可';
-a + '是' + '是' + b;
-a + '是' + '是' + b + c;
-a + '是' + '是' + b + c + '可';
+const enum Title {
+  'chinese' = '你好',
+  'english' = 'hello',
+}
+
 const getName = (preName: '小明' | '小红') => preName + '同学';
 export default function App() {
   /** 这里的会依次转换 */
@@ -30,7 +17,7 @@ export default function App() {
   const obj = {
     '123': '你好',
     '中文：': '你好',
-    '英文：': 'hello' +getName('小红'),
+    '英文：': 'hello' + getName('小红'),
     english: `${'hello'},你好`,
   };
 
