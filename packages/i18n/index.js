@@ -1,7 +1,8 @@
 const { transformFromAstSync } = require('@babel/core');
 const parser = require('@babel/parser');
 const prettier = require('prettier');
-const autoI18nPlugin = require('./plugin/i18n');
+const autoI18nPlugin = require('./plugin/i18n').autoI18nPlugin;
+const pluginDefaultOptions = require('./plugin/i18n').defaultOptions;
 const fs = require('fs');
 const path = require('path');
 
@@ -11,19 +12,7 @@ const srcPath = path.resolve(__dirname, './src');
 /**
  * 对单个文件进行ast分析，返回整理后的code
  */
-function transformSingleFile(
-  filePath,
-  options = {
-    /** 在babel解析结束之前，获取解析字典的callback */
-    mappingCallbacks: (dict) => {},
-    /** babel解析后如果修改了源代码，则需要通过callback进行调用通知外部 */
-    changeAstCallback: () => {},
-    /** 国际化函数名，比如提供intl，则会将 '你好'转译成intl('md5Hash:15') */
-    intlFuncName: '',
-    /** 导入国际化函数的import语句，将会在需要导入的文件最上面自动添加，比如： import {intl} from "@/utils/intl" */
-    injectIntlImport: '',
-  },
-) {
+function transformSingleFile(filePath, options = pluginDefaultOptions) {
   const sourceCode = fs.readFileSync(filePath, {
     encoding: 'utf-8',
   });

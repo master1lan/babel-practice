@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "license": "MIT",
   "scripts": {
-    "build:i18n": "node index.js"
+    "build:i18n": "node index.js",
+    "test": "jest"
   },
   "devDependencies": {
     "crypto-js": "^4.1.1"

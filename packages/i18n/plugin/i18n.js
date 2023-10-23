@@ -2,6 +2,7 @@ const { declare } = require('@babel/helper-plugin-utils');
 const generate = require('@babel/generator').default;
 const parser = require('@babel/parser');
 const t = require('@babel/types');
+// @ts-ignore
 const crypto = require('crypto-js');
 
 const AllText = 'allText';
@@ -9,6 +10,7 @@ const finalAction = 'finalAction';
 const shouldFinalAction = 'noImport';
 
 const defaultOptions = {
+  // @ts-ignore
   mappingCallbacks: (dict) => {},
   /** babel解析后如果修改了源代码，则需要通过callback进行调用通知外部 */
   changeAstCallback: () => {},
@@ -19,7 +21,8 @@ const defaultOptions = {
 };
 const formatOptionsKeys = Object.keys(defaultOptions);
 
-const autoTrackPlugin = declare((api, options, dirname) => {
+// @ts-ignore
+const autoI18nPlugin = declare((api, options, dirname) => {
   api.assertVersion(7);
   if (formatOptionsKeys.some((propKey) => !Reflect.has(options, propKey))) {
     throw new Error(
@@ -130,8 +133,11 @@ const autoTrackPlugin = declare((api, options, dirname) => {
   return {
     /** 处理之前的准备操作 */
     pre(file) {
+      // @ts-ignore
       file.set(AllText, []);
+      // @ts-ignore
       file.set(finalAction, () => {});
+      // @ts-ignore
       file.set(shouldFinalAction, false);
     },
     visitor: {
@@ -143,9 +149,11 @@ const autoTrackPlugin = declare((api, options, dirname) => {
           // 这段用于查询该文件内是否已导入相关api，未导入则自动在第一行导入。
           path.traverse({
             ImportDeclaration(p) {
+              // @ts-ignore
               if (p.node.source.value !== intlImportAst.source.value) {
                 return;
               }
+              // @ts-ignore
               if (p.node.specifiers.some((node) => node.imported.name === intlName)) {
                 imported = true;
               }
@@ -154,19 +162,24 @@ const autoTrackPlugin = declare((api, options, dirname) => {
           state.intlUid = intlName;
           if (!imported) {
             const importAst = api.template.ast(intlImportString);
+            // @ts-ignore
             state.file.set(finalAction, () => {
+              // @ts-ignore
               path.node.body.unshift(importAst);
             });
           }
           // 这段用于判断前面有没有相关忽略注释，有则需要忽略这些转换操作。
           path.traverse({
             'StringLiteral|TemplateLiteral'(path) {
+              // @ts-ignore
               path.node.leadingComments?.map((comment, index) => {
                 if (comment.value.includes('i18n-disable')) {
+                  // @ts-ignore
                   path.node.skipTransform = true;
                 }
               });
               if (path.findParent((p) => p.isImportDeclaration())) {
+                // @ts-ignore
                 path.node.skipTransform = true;
               }
             },
@@ -189,6 +202,7 @@ const autoTrackPlugin = declare((api, options, dirname) => {
         if (!includesChinese(value)) {
           return;
         }
+        // @ts-ignore
         path.node.key = api.template.ast(`[${keyNode.extra.raw}]`).expression;
         path.replaceWith(path);
         makeFlagToShowChangedAst(state);
@@ -206,13 +220,16 @@ const autoTrackPlugin = declare((api, options, dirname) => {
         }
         function reducerBinary(node = path.node) {
           if (!t.isBinaryExpression(node)) {
+            // @ts-ignore
             return [{ ...node }];
           }
           const arr = [];
           if (node.left) {
+            // @ts-ignore
             arr.push(...reducerBinary(node.left));
           }
           if (node.right) {
+            // @ts-ignore
             arr.push(...reducerBinary(node.right));
           }
           return arr;
@@ -283,4 +300,4 @@ const autoTrackPlugin = declare((api, options, dirname) => {
     },
   };
 });
-module.exports = autoTrackPlugin;
+module.exports = { autoI18nPlugin, defaultOptions };

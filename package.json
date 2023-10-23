@@ -15,11 +15,18 @@
     "@babel/helper-plugin-utils": "^7.22.5",
     "@babel/parser": "^7.23.0",
     "@babel/types": "^7.23.0",
-    "@types/babel__core": "^7.20.3",
-    "@types/node": "^20.8.7",
-    "prettier": "^3.0.3"
+    "prettier": "^3.0.3",
+    "@babel/preset-env": "^7.23.2",
+    "@babel/preset-typescript": "^7.23.2",
+    "babel-jest": "^29.7.0",
+    "jest": "^29.7.0"
   },
   "devDependencies": {
-    "@types/babel__helper-plugin-utils": "^7.10.2"
+    "@jest/globals": "^29.7.0",
+    "@types/babel__helper-plugin-utils": "^7.10.2",
+    "@types/babel__core": "^7.20.3",
+    "@types/node": "^20.8.7",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.2.2"
   }
 }
