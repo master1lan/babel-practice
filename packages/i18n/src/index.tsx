@@ -23,14 +23,14 @@ a + '是' + b + '可';
 a + '是' + '是' + b;
 a + '是' + '是' + b + c;
 a + '是' + '是' + b + c + '可';
-// const getName = (preName: '小明' | '小红') => preName + '同学';
+const getName = (preName: '小明' | '小红') => preName + '同学';
 export default function App() {
   /** 这里的会依次转换 */
   const msgArr = ['消息提示', '这里的中文因为没有使用加号', '所以不会被进行拼接'];
   const obj = {
     '123': '你好',
     '中文：': '你好',
-    // '英文：': 'hello' + msgArr[0],
+    '英文：': 'hello' +getName('小红'),
     english: `${'hello'},你好`,
   };
 
