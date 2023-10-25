@@ -7,8 +7,8 @@ const mockCode = `
 const pluginDefaultOptions = {
   mappingCallbacks: (dict) => {},
   changeAstCallback: () => {},
-  intlFuncName: 'getLangMsg',
   injectIntlImport: 'import {getLangMsg} from "."',
+  getIntlFunc: (hash, sourceMsg) => `getLangMsg(${hash}).d(${sourceMsg})`,
 };
 
 describe('test options format check', () => {

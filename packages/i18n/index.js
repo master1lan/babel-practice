@@ -60,8 +60,8 @@ fsRead(demoPath, (filePath) => {
     const code = transformSingleFile(filePath, {
       mappingCallbacks: mappingDict,
       changeAstCallback: transformChangedAst,
-      intlFuncName: 'getLangMsg',
-      injectIntlImport: 'import { getLangMsg } from "@/intl";',
+      injectIntlImport: 'import  {getLangMsg}  from "@/intl";',
+      getIntlFunc: (hash, sourceMsg) => `getLangMsg(${hash}).d(${sourceMsg})`,
     });
     /** 如果不需要覆盖文件直接返回 */
     if (!shouldWriteFile) {
@@ -75,11 +75,7 @@ fsRead(demoPath, (filePath) => {
 });
 
 const jsonPath = path.join(path.resolve(__dirname, 'output'), 'zh_CN.json');
-if (fs.existsSync(jsonPath)) {
-  const oldDict = JSON.parse(fs.readFileSync(jsonPath, { encoding: 'utf-8' }));
-  mappingDict(oldDict);
-}
-/** 保存json文件 */
+/** 保存json文件,如果存在则覆盖。覆盖是正确的，即使不是首次转换也会收集所有的hash值 */
 fs.writeFileSync(jsonPath, JSON.stringify(intlDict), {
   encoding: 'utf-8',
 });
