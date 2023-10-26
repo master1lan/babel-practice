@@ -274,8 +274,9 @@ const autoI18nPlugin = declare((api, options) => {
         const fnPath = path.node.callee;
         if (
           t.isMemberExpression(fnPath) &&
-          fnPath.object.callee.name === intlClsName &&
-          fnPath.property.name === intlPropName
+          fnPath.property.name === intlPropName &&
+          t.isCallExpression(fnPath.object) &&
+          fnPath.object.callee.name === intlClsName
         ) {
           /** 已经被国际化的中文，此时中文被.d类似函数包裹，类型有字符串或者模版字符串两种，分别执行即可 */
           const innerChinese = path.node.arguments[0],
