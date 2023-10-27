@@ -171,7 +171,10 @@ const autoI18nPlugin = declare((api, options) => {
     // 这里调用babel api转换成 getLangMsg('md5-hash:15').d("中文")的babel代码
     let replaceExpression = api.template.ast(getIntlFunc(replaceValue, sourceValue)).expression;
     // 以下全为判断在jsx中并且是否需要加上{}
-    if (path.findParent?.((p) => p.isJSXAttribute())) {
+    if (path.isJSXText?.()) {
+      // 对应<div>中文</div>这种情况
+      replaceExpression = api.types.jSXExpressionContainer(replaceExpression);
+    } else if (path.findParent?.((p) => p.isJSXAttribute())) {
       if (
         !findParentLevel(path, (p) => p.isJSXExpressionContainer()) &&
         !findParentLevel(path, (p) => p.isLogicalExpression()) &&
@@ -185,9 +188,6 @@ const autoI18nPlugin = declare((api, options) => {
         // 就是在外面包裹一层{}
         replaceExpression = api.types.jSXExpressionContainer(replaceExpression);
       }
-    } else if (path.isJSXText?.()) {
-      // 对应<div>中文</div>这种情况
-      replaceExpression = api.types.jSXExpressionContainer(replaceExpression);
     }
 
     return replaceExpression;
@@ -413,8 +413,12 @@ const autoI18nPlugin = declare((api, options) => {
         makeFlagToShowChangedAst(state);
       },
       /** stringLiteral就是类似'123'这种，JSXText就是类似<p>hello</p>这种 */
-      'StringLiteral|JSXText'(path, state) {
+      StringLiteral(path, state) {
         const value = getStrPathValue(path);
+        resolveAst(path, state, value, JSON.stringify(value));
+      },
+      JSXText(path, state) {
+        const value = getStrPathValue(path).toString().replace(/\n/g, '').trim();
         resolveAst(path, state, value, JSON.stringify(value));
       },
       /** TemplateLiteral就是类似`123`这种 */
